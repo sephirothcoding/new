@@ -1,771 +1,585 @@
 <!DOCTYPE html>
 <html>
-<body>
-
 <head>
-   <script src="functions.js"></script> 
-<link rel="stylesheet" href="style.css">
- </head>
-<div id="NotAllowedme">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Magic Scroll</title>
+
+<link href="magicscroll/magicscroll.css" rel="stylesheet" type="text/css" media="screen"/>
+<script src="magicscroll/magicscroll.js" type="text/javascript"></script>
+
+<style type="text/css">
+    html { position: relative; min-height: 100%; }
+    body { position: absolute; left:0; right: 0; min-height: 100%; background:#fff; margin:0; padding:0; font-size: 100%; }
+    body, td {
+        font-family: 'Helvetica Neue', Helvetica, 'Lucida Grande', Tahoma, Arial, Verdana, sans-serif;
+        line-height: 1.5em;
+        -webkit-text-rendering: geometricPrecision;
+        text-rendering: geometricPrecision;
+    }
+    h1 { font-size:1.5em; font-weight:normal; color:#555; }
+    h2 { font-size:1.3em; font-weight:normal; color:#555; }
+    h2.caption { margin: 2.5em 0 0;}
+    h3 { font-size:1.1em; font-weight: normal; color:#555; }
+    h3.pad { margin: 2em 0 1em; }
+    h4 { font-size: 1em; font-weight:normal; color:#555; }
+    p.pad { margin-top: 1.5em; }
+    a { outline: none;}
+
+
+    .cfg-btn {
+        background-color: rgb(55, 181, 114);
+        color: #fff;
+        border: 0;
+        box-shadow: 0 0 1px 0px rgba(0,0,0,0.3);
+        outline:0;
+        cursor: pointer;
+        width: 200px;
+        padding: 10px;
+        font-size: 1em;
+        position: relative;
+        display: inline-block;
+        margin: 10px auto;
+    }
+    .cfg-btn:hover:not([disabled]) {
+        background-color: rgb(37, 215, 120);
+    }
+    .mobile-magic .cfg-btn:hover:not([disabled]) { background: rgb(55, 181, 114); }
+    .cfg-btn[disabled] { opacity: .5; color: #808080; background: #ddd; }
+
+    .cfg-btn.btn-preview,
+    .cfg-btn.btn-preview:active,
+    .cfg-btn.btn-preview:focus {
+        font-size: 1em;
+        position: relative;
+        display: block;
+        margin: 10px auto;
+    }
+
+    .cfg-btn,
+    .preview,
+    .app-figure,
+    .api-controls,
+    .wizard-settings,
+    .wizard-settings .inner,
+    .wizard-settings .footer,
+    .wizard-settings input,
+    .wizard-settings select {
+        -webkit-box-sizing: border-box;
+           -moz-box-sizing: border-box;
+                box-sizing: border-box;
+    }
+    .preview,
+    .wizard-settings {
+        padding: 10px;
+        border: 0;
+        min-height: 1px;
+    }
+    .preview {
+        position: relative;
+    }
+
+    .api-controls {
+        text-align: center;
+    }
+    .api-controls button,
+    .api-controls button:active,
+    .api-controls button:focus {
+         width: 80px; font-size: .7em;
+         white-space: nowrap;
+    }
+
+    .app-figure {
+        width: 80% !important;
+        margin: 50px auto; border: 0px solid red;
+        padding: 20px;
+        position: relative;
+        text-align: center;
+    }
+    .selectors { margin-top: 10px; }
+
+    .app-code-sample {
+        max-width: 80%;
+        margin: 80px auto 0;
+        text-align: center;
+        position: relative;
+    }
+    .app-code-sample input[type="radio"] {
+        display: none;
+    }
+    .app-code-sample label {
+        display: inline-block;
+        padding: 2px 12px;
+        margin: 0;
+        font-size: .8em;
+        text-decoration: none;
+        cursor: pointer;
+        color: #666;
+        border: 1px solid rgba(136, 136, 136, 0.5);
+        background-color: transparent;
+    }
+    .app-code-sample label:hover {
+        color: #fff;
+        background-color: rgb(253, 154, 30);
+        border-color: rgb(253, 154, 30);
+    }
+    .app-code-sample input[type="radio"]:checked+label {
+        color: #fff;
+        background-color: rgb(110, 110, 110) !important;
+        border-color: rgba(110, 110, 110, 0.7) !important;
+    }
+    .app-code-sample label:first-of-type {
+        border-radius: 4px 0 0 4px;
+        border-right-color: transparent;
+    }
+    .app-code-sample label:last-of-type {
+        border-radius: 0 4px 4px 0;
+        border-left-color: transparent;
+    }
+
+    .app-code-sample .app-code-holder {
+        padding: 0;
+        position: relative;
+        border: 1px solid #eee;
+        border-radius: 0px;
+        background-color: #fafafa;
+        margin: 15px 0;
+    }
+    .app-code-sample .app-code-holder > div {
+        display: none;
+    }
+    .app-code-sample .app-code-holder pre {
+        text-align: left;
+        white-space: pre-line;
+        border: 0px solid #eee;
+        border-radius: 0px;
+        background-color: transparent;
+        padding: 25px 50px 25px 25px;
+        margin: 0;
+        min-height: 25px;
+    }
+    .app-code-sample input[type="radio"]:nth-of-type(1):checked ~ .app-code-holder > div:nth-of-type(1) {
+        display: block;
+    }
+    .app-code-sample input[type="radio"]:nth-of-type(2):checked ~ .app-code-holder > div:nth-of-type(2) {
+        display: block;
+    }
+
+    .app-code-sample .app-code-holder .cfg-btn-copy {
+        display: none;
+        z-index: -1;
+        position: absolute;
+        top:10px; right: 10px;
+        width: 44px;
+        font-size: .65em;
+        white-space: nowrap;
+        margin: 0;
+        padding: 4px;
+    }
+    .copy-msg {
+        font: normal 11px/1.2em 'Helvetica Neue', Helvetica, 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, sans-serif;
+        color: #2a4d14;
+        border: 1px solid #2a4d14;
+        border-radius: 4px;
+        position: absolute;
+        top: 8px;
+        left: 0;
+        right: 0;
+        width: 200px;
+        max-width: 70%;
+        padding: 4px;
+        margin: 0px auto;
+        text-align: center;
+    }
+    .copy-msg-failed {
+        color: #b80c09;
+        border-color: #b80c09;
+        width: 430px;
+    }
+    .mobile-magic .app-code-sample .cfg-btn-copy { display: none; }
+    #code-to-copy { position: absolute; width: 0; height: 0; top: -10000px; }
+    .lt-ie9-magic .app-code-sample { display: none; }
+
+    .wizard-settings {
+        background-color: #4f4f4f;
+        color: #a5a5a5;
+        position: absolute;
+        right: 0;
+        width: 340px;
+    }
+    .wizard-settings .inner {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+    .wizard-settings .footer {
+        color: #c7d59f;
+        font-size: .75em;
+        width: 100%;
+        position: relative;
+        vertical-align: bottom;
+        text-align: center;
+        padding: 6px;
+        margin-top: 10px;
+    }
+    .wizard-settings .footer a { color: inherit; text-decoration: none; }
+    .wizard-settings .footer a:hover { text-decoration: underline; }
+
+    .wizard-settings a { color: #cc9933; }
+    .wizard-settings a:hover { color: #dfb363; }
+    .wizard-settings table > tbody > tr > td { vertical-align: top; }
+    .wizard-settings table { min-width: 300px; max-width: 100%; font-size: .8em; margin: 0 auto; }
+    .wizard-settings table caption { font-size: 1.5em; padding: 16px 8px; }
+    .wizard-settings table td { padding: 4px 8px; }
+    .wizard-settings table td:first-child { white-space: nowrap; }
+    .wizard-settings table td:nth-child(2) { text-align: left; }
+    .wizard-settings table td .values {
+        color: #a08794;
+        font-size: 0.8em;
+        line-height: 1.3em;
+        display: block;
+        max-width: 170px;
+    }
+    .wizard-settings table td .values:before { content: ''; display: block; }
+
+    .wizard-settings input,
+    .wizard-settings select {
+        width: 170px;
+    }
+    .wizard-settings input {
+        padding: 0px 4px;
+    }
+    .wizard-settings input[disabled] {
+        color: #808080;
+        background: #a7a7a7;
+        border: 1px solid #a7a7a7;
+    }
+
+    .preview { width: 70%; float: left; }
+    @media (min-width: 0px) {
+        .preview { width: 100%; float: none; }
+    }
+    @media (min-width: 1024px) {
+        .preview { width: calc(100% - 340px); }
+        .wizard-settings { top: 0; min-height: 100%; }
+        .wizard-settings .inner { margin-top: 60px; }
+        .wizard-settings .footer { position: absolute; bottom: 0; left: 0; }
+        .wizard-settings .settings-controls {
+            position: fixed;
+            top: 0; right: 0;
+            width: 340px;
+            padding: 10px 0 0;
+            text-align: center;
+            background-color: inherit;
+        }
+    }
+    @media screen and (max-width: 1023px) {
+        .app-figure { width: 98% !important; margin: 50px 0; padding: 0; }
+        .app-code-sample { display: none; }
+        .wizard-settings { width: 100%; }
+    }
+    @media screen and (max-width: 600px) {
+        .api-controls button, .api-controls button:active, .api-controls button:focus {
+            width: 70px;
+        }
+    }
+    @media screen and (max-width: 560px) {
+        .api-controls .sep { content: ''; display: table; }
+    }
+    @media screen and (min-width: 1600px) {
+        .preview { padding: 10px 160px; }
+    }
 </style>
-<div id="NotAllowedme">
-<div id="jd-main"> 
-<div id="-jd_1"> 
-<div id="-jd_2"> 
-<div class="jd-app"> 
-<div class="jd-header"> 
-<div class="jd-btn"> 
+<script>
+    var callbacks = {
+        onReady: function () {
+            console.log('onReady', arguments[0]);
+        },
+        onStop: function () {
+            console.log('onStop', arguments[0]);
+        },
+        onItemHover: function () {
+            console.log('onItemHover', arguments[0]);
+        },
+        onItemOut: function () {
+            console.log('onItemOut', arguments[0]);
+        },
+        onMoveStart: function () {
+            console.log('onMoveStart', arguments[0]);
+        },
+        onMoveEnd: function () {
+            console.log('onMoveEnd', arguments[0]);
+        }
+    };
 
-</div> 
-<div class="jd-banner"> 
-<img src="https://i.imgur.com/aDA01g3.gif" /> </div>
-   
- <div class="jd-bottom"> <div class="jd-container"> <div class="jd-user"> <img src="https://i.imgur.com/30ouOTU.gif" /> </div> 
-   
+    var MagicScrollOptions = {};
+    magicJS.extend(MagicScrollOptions, callbacks);
 
-<div class="jd-navigator"> 
-<a class="jd-btn-nav" href="https://xat.me/sephirroth">
+    function isDefaultOption(o) {
+        return magicJS.$A(magicJS.$(o).byTag('option')).filter(function(opt){
+            return opt.selected && opt.defaultSelected;
+        }).length > 0;
+    }
 
-<span>𝑿𝒂𝒕𝒔𝒑𝒂𝒄𝒆</span> 
-<p>𝑪𝒍𝒊𝒄𝒌 𝒂𝒊𝒄𝒊</p> 
-</a> 
-<a class="jd-btn-nav" href="https://imgur.com/a/zGYOd9u">
+    function toOptionValue(v) {
+        if ( /^(true|false)$/.test(v) ) {
+            return 'true' === v;
+        }
+        if ( /^[0-9]{1,}$/i.test(v) ) {
+            return parseInt(v,10);
+        }
+        return v;
+    }
 
-<span>𝑷𝒄𝑩𝒂𝒄𝒌</span> 
-<p>𝑪𝒍𝒊𝒄𝒌 𝒂𝒊𝒄𝒊</p>
-<a class="jd-btn-nav" href="https://imgur.com/a/0Y2Yn3j"> 
+    function makeOptions(optType) {
+        var  value = null, isDefault = true, newParams = Array(), newParamsS = '', options = {};
+        magicJS.$(magicJS.$A(magicJS.$(optType).getElementsByTagName("INPUT"))
+            .concat(magicJS.$A(magicJS.$(optType).getElementsByTagName('SELECT'))))
+            .forEach(function(param){
+                value = ('checkbox'==param.type) ? param.checked.toString() : param.value;
 
-<span>𝑭𝒐𝒏𝒅𝒐𝒔</span> 
-<p>𝑪𝒍𝒊𝒄𝒌 𝒂𝒊𝒄𝒊</p> 
-</a> 
-<a class="jd-btn-nav" href="https://imgur.com/a/aWubo2J">
+                isDefault = ('checkbox'==param.type) ? value == param.defaultChecked.toString() :
+                    ('SELECT'==param.tagName) ? isDefaultOption(param) : value == param.defaultValue;
 
-<span></span> 
-<p></p> 
-</a> 
-</div> 
-</div> 
-</div> 
-</div> 
-<div class="jd-content"> 
-    </p><p style="text-align: center; "><b><span style="font-size: 34px;"><font color="#ffffff">GIF MODELS FOR HALLOWEEN </font></span></b></p>
- 
-   
- <table cellpadding="0" cellspacing="0" width="100%">  
-   <tbody><tr>
-      
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF514</b></font> <img src="https://i.postimg.cc/zfMS1z7L/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF511</b></font> <img src="https://i.postimg.cc/Fzq7Bdx6/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF505</b></font> <img src="https://i.postimg.cc/MpHd0t7W/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF506</b></font> <img src="https://i.postimg.cc/9XRbLVQs/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF507</b></font> <img src="https://i.postimg.cc/wTFtCfFL/anigif.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF515</b></font> <img src="https://i.postimg.cc/9fpQLTZC/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF516</b></font> <img src="https://i.postimg.cc/WbdwFBH6/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF517</b></font> <img src="https://i.postimg.cc/sfqSNsyB/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF518</b></font> <img src="https://i.postimg.cc/sXcmW2NH/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF519</b></font> <img src="https://i.postimg.cc/4NdrPCZF/anigif.gif" style="font-size: 1rem;"> </div></td>
+                if ( null !== value && !isDefault) {
+                    options[param.name] = toOptionValue(value);
+                }
+        });
 
-      </tr> 
-    </tbody>
-   </table>
-   
-   <BR>
-      </p><p style="text-align: center; "><b><span style="font-size: 34px;"><font color="#ffffff">GIF MODELS FOR CHRISTMAS AND NEW YEAR </font></span></b></p>
- <table cellpadding="0" cellspacing="0" width="100%">  
-   <tbody><tr>
+        magicJS.extend(options, callbacks);
+        return options;
+    }
 
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt167</b></font> <img src="https://i.imgur.com/tYY9jDL.gif" style="font-size: 1rem;"> </div></td>
-  <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt20</b></font> <img src="https://i.imgur.com/gPAcMyn.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt3</b></font> <img src="https://i.imgur.com/LW4eagM.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4;border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt4</b></font> <img src="https://i.imgur.com/vjafaje.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt5</b></font> <img src="https://i.imgur.com/f2JvTxZ.gif" style="font-size: 1rem;"> </div></td>
-  <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt8</b></font> <img src="https://i.imgur.com/xovEtH3.gif" style="font-size: 1rem;"> </div></td>
-  <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt19</b></font> <img src="https://i.imgur.com/m42dkEq.gif" style="font-size: 1rem;"> </div></td>
-  <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt67</b></font> <img src="https://i.imgur.com/zgN312E.gif" style="font-size: 1rem;"> </div></td>
-   <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt102</b></font> <img src="https://i.imgur.com/h0vdWFV.gif" style="font-size: 1rem;"> </div></td>
-   <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt144</b></font> <img src="https://i.imgur.com/wSGnK8d.gif" style="font-size: 1rem;"> </div></td>
-   
-  </tr> 
-   <tr>
-<td><div style="text-align: center; width: 100px; height:120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt145</b></font> <img src="https://i.imgur.com/Clw1LXR.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt146</b></font> <img src="https://i.imgur.com/s0K4WPn.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt147</b></font> <img src="https://i.imgur.com/8I7KSRN.gif" style="font-size: 1rem;"> </div></td>
-  <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt151</b></font> <img src="https://i.imgur.com/DI3Cdfa.gif" style="font-size: 1rem;"> </div></td>  
-  <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt169</b></font> <img src="https://i.imgur.com/GvowgPj.gif" style="font-size: 1rem;"> </div></td>
-  <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt117</b></font> <img src="https://i.imgur.com/WRSDCyr.gif" style="font-size: 1rem;"> </div></td>
-  <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt16</b></font> <img src="https://i.imgur.com/fKVUYGb.gif" style="font-size: 1rem;"> </div></td>
-   <td><div style="text-align:center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt14</b></font> <img src="https://i.imgur.com/PVm6GWQ.gif" style="font-size: 1rem;"> </div></td>
-   <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt9</b></font> <img src="https://i.imgur.com/whC3XNp.gif" style="font-size: 1rem;"> </div></td>
-      <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Btnew</b></font> <img src="https://i.postimg.cc/xT8tb4Z3/anigif.gif" style="font-size: 1rem;"> </div></td>
-   
-   </tr> 
-    </tbody>
-   </table>
-   
-  </p><p style="text-align: center; "><b><span style="font-size: 34px;"><font color="#ffffff">Gif Models NEW 2021 </font></span></b></p>
+    function updateScriptCode() {
+        var code = '&lt;script&gt;\nvar MagicScrollOptions = ';
+        code += JSON.stringify(MagicScrollOptions, null, 2).replace(/\"(\w+)\":/g,"$1:")+';';
+        code += '\n&lt;/script&gt;';
 
-<table cellpadding="0" cellspacing="0" width="100%">
-<tbody><tr>
-   
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF497</b></font> <img src="https://i.postimg.cc/3xjSTTF7/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF498</b></font> <img src="https://i.postimg.cc/DzNnqLJx/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af499</b></font> <img src="https://i.postimg.cc/wBBSfZ52/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF500</b></font> <img src="https://i.postimg.cc/zGbFp1V8/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF501</b></font> <img src="https://i.postimg.cc/pV6K1X44/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF502</b></font> <img src="https://i.postimg.cc/GpzQQ4NN/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF503</b></font> <img src="https://i.postimg.cc/rsfnycvd/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF504</b></font> <img src="https://i.postimg.cc/RFPGbT6T/anigif.gif" style="font-size: 1rem;"> </div></td>
+        magicJS.$('app-code-sample-script').changeContent(code);
+    }
 
+    function updateInlineCode() {
+        var code = '&lt;div class="MagicScroll" data-options="';
+        code += JSON.stringify(MagicScrollOptions).replace(/\"(\w+)\":(?:\"([^"]+)\"|([^,}]+))(,)?/g, "$1: $2$3; ").replace(/\{([^{}]*)\}/,"$1").replace(/\s*$/,'');
+        code += '"&gt;';
 
+        magicJS.$('app-code-sample-inline').changeContent(code);
+    }
 
- </tr> 
-   
-   
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF508</b></font> <img src="https://i.postimg.cc/y851gP9S/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af509</b></font> <img src="https://i.postimg.cc/FKYHj2W9/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF510</b></font> <img src="https://i.postimg.cc/tCmGqgb2/anigif.gif" style="font-size: 1rem;"> </div></td>
+    function applySettings() {
+        MagicScroll.stop('scroll-1');
+        MagicScrollOptions = makeOptions('params');
+        MagicScroll.start('scroll-1');
+        updateScriptCode();
+        updateInlineCode();
+        try {
+            prettyPrint();
+        } catch(e) {}
+    }
 
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF512</b></font> <img src="https://i.postimg.cc/mrvvrbgH/anigif.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF513</b></font> <img src="https://i.postimg.cc/B6fRzvfg/anigif.gif" style="font-size: 1rem;"> </div></td>
-   <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF520</b></font> <img src="https://i.postimg.cc/HkLvHbjZ/anigif.gif" style="font-size: 1rem;"> </div></td>
+    function copyToClipboard(src) {
+        var
+            copyNode,
+            range, success;
 
+        if (!isCopySupported()) {
+            disableCopy();
+            return;
+        }
+        copyNode = document.getElementById('code-to-copy');
+        copyNode.innerHTML = document.getElementById(src).innerHTML;
 
- </tr> 
-   
-   </tbody></table>
- 
- 
-</p><p style="text-align: center; "><b><span style="font-size: 34px;"><font color="#ffffff">Gif Models 2 photos or 2 names</font></span></b></p>
+        range = document.createRange();
+        range.selectNode(copyNode);
+        window.getSelection().addRange(range);
 
-<table cellpadding="0" cellspacing="0" width="100%">
- <tbody><tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af496</b></font> <img src="https://i.imgur.com/W5nsSQp.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF495</b></font> <img src="https://i.imgur.com/sDAUYxl.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF494</b></font> <img src="https://i.imgur.com/HCd811S.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF493</b></font> <img src="https://i.imgur.com/gozWSlY.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF491</b></font> <img src="https://i.imgur.com/NKQszu2.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF492</b></font> <img src="https://i.imgur.com/uQX7VzA.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF480</b></font> <img src="https://i.imgur.com/ZRdqIXv.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>BT18</b></font> <img src="https://i.imgur.com/8XJGYik.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>BT22</b></font> <img src="https://i.imgur.com/Ob2R6Gv.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>BT11</b></font> <img src="https://i.imgur.com/mzVvKDI.gif" style="font-size: 1rem;"> </div></td>
- </tr>
+        try {
+            success = document.execCommand('copy');
+        } catch(err) {
+            success = false;
+        }
+        window.getSelection().removeAllRanges();
+        if (!success) {
+            disableCopy();
+        } else {
+            new magicJS.Message('Settings code copied to clipboard.', 3000,
+                document.querySelector('.app-code-holder'), 'copy-msg');
+        }
+    }
 
+    function disableCopy() {
+        magicJS.$A(document.querySelectorAll('.cfg-btn-copy')).forEach(function(node) {
+            node.disabled = true;
+        });
+        new magicJS.Message('Sorry, cannot copy settings code to clipboard. Please select and copy code manually.', 3000,
+            document.querySelector('.app-code-holder'), 'copy-msg copy-msg-failed');
+    }
 
- <tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt32</b></font> <img src="https://i.imgur.com/Z6Xd11L.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>BT33</b></font> <img src="https://i.imgur.com/nzBVUM1.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>BT42</b></font> <img src="https://i.imgur.com/YVBrGsH.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>BT54</b></font> <img src="https://i.imgur.com/vhqpgjj.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt89</b></font> <img src="https://i.imgur.com/3PYbrGi.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt125</b></font> <img src="https://i.imgur.com/Mizhe9E.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt168</b></font> <img src="https://i.imgur.com/X8RKLFk.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt171</b></font> <img src="https://i.imgur.com/kqFt1m9.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt1</b></font> <img src="https://i.imgur.com/4cYUlWZ.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt50</b></font> <img src="https://i.imgur.com/2Cr53Jn.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-<tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF265</b></font> <img src="https://i.imgur.com/bDz4ow1.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF266</b></font> <img src="https://i.imgur.com/6KX5P1V.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af379</b></font> <img src="https://i.imgur.com/X67ARFY.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF368</b></font> <img src="https://i.imgur.com/tOJsL8Y.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF369</b></font> <img src="https://i.imgur.com/MOjmEGK.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF374</b></font> <img src="https://i.imgur.com/KWvYnGI.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF375</b></font> <img src="https://i.imgur.com/ZasQCUO.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF384</b></font> <img src="https://i.imgur.com/wMqnH4Q.gif" style="font-size: 1rem;"> </div></td>
- 
- </tr>
-</tbody></table>
-<p></p><p><br></p><p><br></p>
+    function isCopySupported() {
+        if ( !window.getSelection || !document.createRange || !document.queryCommandSupported ) { return false; }
+        return document.queryCommandSupported('copy');
+    }
+</script>
+</head>
+<body>
+<div class="preview col">
+    <div class="api-controls">
+        <button class="cfg-btn" onclick="MagicScroll.start('scroll-1')">Start</button>
+        <button class="cfg-btn" onclick="MagicScroll.stop('scroll-1')">Stop</button>
+        <button class="cfg-btn" onclick="MagicScroll.refresh('scroll-1')">Refresh</button><span class="sep"></span>
+        <button class="cfg-btn" onclick="MagicScroll.backward('scroll-1')">Backward</button>
+        <button class="cfg-btn" onclick="MagicScroll.forward('scroll-1')">Forward</button>
+        <button class="cfg-btn" onclick="MagicScroll.play('scroll-1', 100)">Play</button>
+        <button class="cfg-btn" onclick="MagicScroll.pause('scroll-1')">Pause</button>
+    </div>
 
-<p></p><p style="text-align: center; "><b><span style="font-size: 34px;"><font color="#ffffff">Gif Models 1 photo and 1 name</font></span></b></p>
+    <div class="app-figure" id="zoom-fig">
+        <div class="MagicScroll" id="scroll-1">
+            <a><img
+                srcset="http://magictoolbox.sirv.com/images/magicscroll/allstar-1-1b.jpg?canvas.height=180&canvas.width=280 2x" src="http://magictoolbox.sirv.com/images/magicscroll/allstar-1-1b.jpg?scale.height=130&canvas.height=90&canvas.width=140" />All Star Plaid</a>
+            <a><img
+                srcset="http://magictoolbox.sirv.com/images/magicscroll/allstar-2-1b.jpg?canvas.height=180&canvas.width=280 2x" src="http://magictoolbox.sirv.com/images/magicscroll/allstar-2-1b.jpg?scale.height=130&canvas.height=90&canvas.width=140" />All Star Green</a>
+            <a><img
+                srcset="http://magictoolbox.sirv.com/images/magicscroll/allstar-3-1b.jpg?canvas.height=180&canvas.width=280 2x" src="http://magictoolbox.sirv.com/images/magicscroll/allstar-3-1b.jpg?scale.height=130&canvas.height=90&canvas.width=140" />All Star Tartan</a>
+            <a><img
+                srcset="http://magictoolbox.sirv.com/images/magicscroll/allstar-4-1b.jpg?canvas.height=180&canvas.width=280 2x" src="http://magictoolbox.sirv.com/images/magicscroll/allstar-4-1b.jpg?scale.height=130&canvas.height=90&canvas.width=140" />All Star Pink</a>
+            <a><img
+                srcset="http://magictoolbox.sirv.com/images/magicscroll/allstar-5-1b.jpg?canvas.height=180&canvas.width=280 2x" src="http://magictoolbox.sirv.com/images/magicscroll/allstar-5-1b.jpg?scale.height=130&canvas.height=90&canvas.width=140" />All Star Black</a>
+            <a><img
+                srcset="http://magictoolbox.sirv.com/images/magicscroll/allstar-6-1b.jpg?canvas.height=180&canvas.width=280 2x" src="http://magictoolbox.sirv.com/images/magicscroll/allstar-6-1b.jpg?scale.height=130&canvas.height=90&canvas.width=140" />All Star Orange</a>
+            <a><img
+                srcset="http://magictoolbox.sirv.com/images/magicscroll/allstar-7-1b.jpg?canvas.height=180&canvas.width=280 2x" src="http://magictoolbox.sirv.com/images/magicscroll/allstar-7-1b.jpg?scale.height=130&canvas.height=90&canvas.width=140" />All Star Charcoal</a>
+            <a><img
+                srcset="http://magictoolbox.sirv.com/images/magicscroll/allstar-8-1b.jpg?canvas.height=180&canvas.width=280 2x" src="http://magictoolbox.sirv.com/images/magicscroll/allstar-8-1b.jpg?scale.height=130&canvas.height=90&canvas.width=140" />All Star Navy</a>
+            <a><img
+                srcset="http://magictoolbox.sirv.com/images/magicscroll/allstar-9-1b.jpg?canvas.height=180&canvas.width=280 2x" src="http://magictoolbox.sirv.com/images/magicscroll/allstar-9-1b.jpg?scale.height=130&canvas.height=90&canvas.width=140" />All Star Red</a>
+        </div>
+    </div>
 
-<table cellpadding="0" cellspacing="0" width="100%">
- <tbody><tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>BT190</b></font> <img src="https://i.imgur.com/hkvgpoR.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt188</b></font> <img src="https://i.imgur.com/EgCfYyI.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt2</b></font> <img src="https://i.imgur.com/2kLT1tj.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt7</b></font> <img src="https://i.imgur.com/o2p9923.gif" style="font-size: 1rem;"> </div></td>
- 
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt10</b></font> <img src="https://i.imgur.com/Bj8FdqO.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt12</b></font> <img src="https://i.imgur.com/DcQCSYI.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt13</b></font> <img src="https://i.imgur.com/HkEHdv8.gif" style="font-size: 1rem;"> </div></td>
- 
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt15</b></font> <img src="https://i.imgur.com/gfcgByN.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt45</b></font> <img src="https://i.imgur.com/gSMyXob.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt46</b></font> <img src="https://i.imgur.com/HLSdLZW.gif" style="font-size: 1rem;"> </div></td>
+    <div class="app-code-sample">
+        <input type="radio" name="code-sample-nav" id="code-sample-nav-1" checked="checked"><label for="code-sample-nav-1">Global settings</label
+        ><input type="radio" name="code-sample-nav" id="code-sample-nav-2"><label for="code-sample-nav-2">Inline settings</label>
+        <div class="app-code-holder">
+            <div>
+                <pre class="prettyprint" id="app-code-sample-script">
+                    &lt;script&gt;
+                    var MagicScrollOptions = {};
+                    &lt;/script&gt;
+                </pre>
+                <button class="cfg-btn cfg-btn-copy" autocomplete="off" onclick="copyToClipboard('app-code-sample-script')">Copy</button>
+            </div>
+            <div>
+                <pre class="prettyprint" id="app-code-sample-inline">
+                    &lt;div class="MagicScroll" data-options=""&gt;
+                </pre>
+                <button class="cfg-btn cfg-btn-copy" autocomplete="off" onclick="copyToClipboard('app-code-sample-inline')">Copy</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    </tr>
-
-
- <tr>
- 
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt17</b></font> <img src="https://i.imgur.com/81mGjWv.gif" style="font-size: 1rem;"> </div></td>
-
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt23</b></font> <img src="https://i.imgur.com/lp9Q8hP.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt24</b></font> <img src="https://i.imgur.com/T39zSL4.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt25</b></font> <img src="https://i.imgur.com/71Jnhwy.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt26</b></font> <img src="https://i.imgur.com/vHu7VkS.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt27</b></font> <img src="https://i.imgur.com/idHhRer.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt28</b></font> <img src="https://i.imgur.com/teFr88U.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt29</b></font> <img src="https://i.imgur.com/7GffhZS.gif" style="font-size: 1rem;"> </div></td>
-</tr>
-<tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt30</b></font> <img src="https://i.imgur.com/4bSagk4.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt31</b></font> <img src="https://i.imgur.com/FdxisAx.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt34</b></font> <img src="https://i.imgur.com/TNwWJ2g.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt36</b></font> <img src="https://i.imgur.com/75p98Yx.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt37</b></font> <img src="https://i.imgur.com/iVTES3k.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt38</b></font> <img src="https://i.imgur.com/L8UvSkt.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt40</b></font> <img src="https://i.imgur.com/yvdlBoQ.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt44</b></font> <img src="https://i.imgur.com/cG8dJmX.gif" style="font-size: 1rem;"> </div></td>
-
- </tr>
-<tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt47</b></font> <img src="https://i.imgur.com/9yw6eqL.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt48</b></font> <img src="https://i.imgur.com/fy91vVF.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt49</b></font> <img src="https://i.imgur.com/ELioeWh.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt51</b></font> <img src="https://i.imgur.com/O5TeWpH.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt52</b></font> <img src="https://i.imgur.com/htsGW6y.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt53</b></font> <img src="https://i.imgur.com/5x8AE9t.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt55</b></font> <img src="https://i.imgur.com/xqmiQty.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt56</b></font> <img src="https://i.imgur.com/ubyaaGj.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt57</b></font> <img src="https://i.imgur.com/5Cw5LS8.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt58</b></font> <img src="https://i.imgur.com/rUlA8b1.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-
-<tr>
-
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt59</b></font> <img src="https://i.imgur.com/nsIhJCe.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>BT60</b></font> <img src="https://i.imgur.com/fu7JcO2.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt62</b></font> <img src="https://i.imgur.com/GaeujPm.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt63</b></font> <img src="https://i.imgur.com/9vNJhO0.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt64</b></font> <img src="https://i.imgur.com/gLRhXAY.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt65</b></font> <img src="https://i.imgur.com/RR53UTN.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt66</b></font> <img src="https://i.imgur.com/sb2eDi0.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align:
- center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt68</b></font> <img src="https://i.imgur.com/gRvtF4G.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt69</b></font> <img src="https://i.imgur.com/FvPsBGI.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>FBt70</b></font> <img src="https://i.imgur.com/aL3nLDK.gif" style="font-size: 1rem;"> </div></td>
- </tr>
- 
-</tbody></table>
-
-body&gt;<table cellpadding="0" cellspacing="0" width="100%">
- <tbody>
-<tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt73</b></font> <img src="https://i.imgur.com/eEGn2Dn.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt75</b></font> <img src="https://i.imgur.com/1txrqkF.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt76</b></font> <img src="https://i.imgur.com/ngBv4Oy.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt77</b></font> <img src="https://i.imgur.com/J7a22fQ.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>BT78</b></font> <img src="https://i.imgur.com/DDkT240.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt79</b></font> <img src="https://i.imgur.com/JyF7GKq.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt80</b></font> <img src="https://i.imgur.com/uibhDwz.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt84</b></font> <img src="https://i.imgur.com/vALTrxa.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt85</b></font> <img src="https://i.imgur.com/W1CjcTc.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt86</b></font> <img src="https://i.imgur.com/2zsjsY6.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-
-
- <tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt87</b></font> <img src="https://i.imgur.com/pRg7r7g.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt88</b></font> <img src="https://i.imgur.com/EECAI9P.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt91</b></font> <img src="https://i.imgur.com/tsfcqlD.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt92</b></font> <img src="https://i.imgur.com/Sd5yKaR.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt93</b></font> <img src="https://i.imgur.com/0CLCKbx.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt94</b></font> <img src="https://i.imgur.com/HfumojI.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt95</b></font> <img src="https://i.imgur.com/QcZQYAv.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt96</b></font> <img src="https://i.imgur.com/E8hdvFE.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt97</b></font> <img src="https://i.imgur.com/WAPbvuo.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt99</b></font> <img src="https://i.imgur.com/LD9sOq0.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-<tr>
- </tr><tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt100</b></font> <img src="https://i.imgur.com/EczJ64y.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt105</b></font> <img src="https://i.imgur.com/Qy93sZy.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt109</b></font> <img src="https://i.imgur.com/hQeSTra.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt111</b></font> <img src="https://i.imgur.com/RfD7oGC.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt112</b></font> <img src="https://i.imgur.com/P5Cycjo.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt115</b></font> <img src="https://i.imgur.com/wAjpH6e.gif" style="font-size: 1rem;"> </div></td>
- 
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt120</b></font> <img src="https://i.imgur.com/qXxGI77.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt121</b></font> <img src="https://i.imgur.com/qPyb1VC.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt122</b></font> <img src="https://i.imgur.com/0hlKE8r.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-<tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt124</b></font> <img src="https://i.imgur.com/CX3IdRf.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt126</b></font> <img src="https://i.imgur.com/5EV5iET.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt129</b></font> <img src="https://i.imgur.com/mXTo6lr.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt130</b></font> <img src="https://i.imgur.com/2l4mp9F.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt131</b></font> <img src="https://i.imgur.com/xFRR9g2.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt132</b></font>
- <img src="https://i.imgur.com/dvapOc8.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt133</b></font> <img src="https://i.imgur.com/kIpD4Bw.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt134</b></font> <img src="https://i.imgur.com/HlywJnl.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt135</b></font> <img src="https://i.imgur.com/dihtUGW.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt136</b></font> <img src="https://i.imgur.com/HJ94ntc.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-
-<tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt137</b></font> <img src="https://i.imgur.com/sPmdQmJ.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt138</b></font> <img src="https://i.imgur.com/6yGF47Z.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt139</b></font> <img src="https://i.imgur.com/rK11Re0.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt140</b></font> <img src="https://i.imgur.com/hvqTe4K.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt142</b></font> <img src="https://i.imgur.com/TAuYW4L.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt148</b></font> <img src="https://i.imgur.com/1vWhFmj.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt150</b></font> <img src="https://i.imgur.com/J3Z86Tr.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt152</b></font> <img src="https://i.imgur.com/rj4RW5D.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt153</b></font> <img src="https://i.imgur.com/5FDQpus.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt154</b></font> <img src="https://i.imgur.com/CmDF0IB.gif" style="font-size: 1rem;"> </div></td>
- </tr><tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt155</b></font> <img src="https://i.imgur.com/xt6tIah.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt156</b></font> <img src="https://i.imgur.com/nNHzZML.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt157</b></font> <img src="https://i.imgur.com/T6mL8s8.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt159</b></font> <img src="https://i.imgur.com/vPVy06s.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt160</b></font> <img src="https://i.imgur.com/Hpjg2a5.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt161</b></font> <img src="https://i.imgur.com/JLVQYWI.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt162</b></font> <img src="https://i.imgur.com/t55uFQK.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt163</b></font> <img src="https://i.imgur.com/fQY6JcP.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt164</b></font> <img src="https://i.imgur.com/2d5kx8x.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt165</b></font> <img src="https://i.imgur.com/bz2N3Fm.gif" style="font-size: 1rem;"> </div></td>
- </tr><tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt166</b></font> <img src="https://i.imgur.com/2jS29jr.gif" style="font-size: 1rem;"> </div></td>
- 
-
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt170</b></font> <img src="https://i.imgur.com/WMIc3am.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt172</b></font> <img src="https://i.imgur.com/lKKl61E.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt173</b></font> <img src="https://i.imgur.com/kSZ6ctb.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt174</b></font> <img src="https://i.imgur.com/0EtQWsv.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt178</b></font> <img src="https://i.imgur.com/biVjblT.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt180</b></font> <img src="https://i.imgur.com/DcsuSu6.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt181</b></font> <img src="https://i.imgur.com/NcpUNmQ.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt194</b></font> <img src="https://i.imgur.com/k6vg8bO.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt192</b></font><b> <img src="https://i.imgur.com/l84bUMn.gif" style="font-size: 1rem;"> </b></div></td>
- 
-    </tr><tr>
- 
- <td><p><br></p><p><br></p><p>&nbsp;&nbsp;</p></td></tr></tbody></table>
-<p>
- 
-</p><p style="text-align: center; "><b><font color="#ffffff"><span style="font-size: 34px;">Gif Models NO photos (only text!!)</span></font></b></p>
-
-<table cellpadding="0" cellspacing="0" width="100%">
- <tbody>
-<tr>
- 
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt6</b></font> <img src="https://i.imgur.com/kPEg75v.gif" style="font-size: 1rem;"> </div></td>
-
- 
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt21</b></font> <img src="https://i.imgur.com/IxR5riW.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>bt35</b></font> <img src="https://i.imgur.com/DysJU3x.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt39</b></font> <img src="https://i.imgur.com/vwSSaa9.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt41</b></font> <img src="https://i.imgur.com/1fEjYpP.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-
-
- <tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt43</b></font> <img src="https://i.imgur.com/0Xji0Ng.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt61</b></font> <img src="https://i.imgur.com/1BrtmGj.gif" style="font-size: 1rem;"> </div></td>
- 
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt71</b></font> <img src="https://i.imgur.com/WiJSLuV.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt72</b></font> <img src="https://i.imgur.com/9kYm3TB.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt74</b></font> <img src="https://i.imgur.com/wOYcUQ5.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt81</b></font> <img src="https://i.imgur.com/qVsazne.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt82</b></font> <img src="https://i.imgur.com/5rOuBr5.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt83</b></font> <img src="https://i.imgur.com/DDmlwKB.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt90</b></font> <img src="https://i.imgur.com/QvEHnEv.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-<tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt98</b></font> <img src="https://i.imgur.com/sTXH2zf.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt101</b></font> <img src="https://i.imgur.com/lnsEUTl.gif" style="font-size: 1rem;"> </div></td>
-
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt103</b></font> <img src="https://i.imgur.com/XXe8Z8V.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt104</b></font> <img src="https://i.imgur.com/psIzIqI.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt106</b></font> <img src="https://i.imgur.com/PD8qJ7r.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt107</b></font> <img src="https://i.imgur.com/AkPGFwA.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt108</b></font> <img src="https://i.imgur.com/5pOBl0O.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt110</b></font> <img src="https://i.imgur.com/owIVzlC.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt113</b></font> <img src="https://i.imgur.com/YoTfReF.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-<tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt114</b></font> <img src="https://i.imgur.com/EIZl6xu.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt116</b></font> <img src="https://i.imgur.com/W2Edh69.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt118</b></font> <img src="https://i.imgur.com/e8ewp5w.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt119</b></font> <img src="https://i.imgur.com/aouXOBL.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt123</b></font> <img src="https://i.imgur.com/v5SOYHi.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt127</b></font> <img src="https://i.imgur.com/rVj1B7w.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt128</b></font> <img src="https://i.imgur.com/w3M3EpH.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt141</b></font> <img src="https://i.imgur.com/8uYTl6N.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt143</b></font> <img src="https://i.imgur.com/IJM7uLl.gif" style="font-size: 1rem;"> </div></td>
- 
- </tr>
-<tr>
- 
-
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt158</b></font> <img src="https://i.imgur.com/Q3v4Csh.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt175</b></font> <img src="https://i.imgur.com/73Dk52a.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt176</b></font> <img src="https://i.imgur.com/2Wc2brG.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt177</b></font> <img src="https://i.imgur.com/9SrHlJW.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt179</b></font> <img src="https://i.imgur.com/qQIShFs.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt182</b></font> <img src="https://i.imgur.com/dqqEjcQ.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-<tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt183</b></font> <img src="https://i.imgur.com/oGP6X1H.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt184</b></font> <img src="https://i.imgur.com/rpobkGZ.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt185</b></font> <img src="https://i.imgur.com/xDxb2UH.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt186</b></font> <img src="https://i.imgur.com/sIc4EUH.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt187</b></font> <img src="https://i.imgur.com/ab4PQuC.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt189</b></font> <img src="https://i.imgur.com/NwdOEba.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt191</b></font> <img src="https://i.imgur.com/eY3jSl2.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt193</b></font> <img src="https://i.imgur.com/ywTJUrM.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Bt195</b></font> <img src="https://i.imgur.com/34xabI3.gif" style="font-size: 1rem;"> </div></td>
- 
-  
-
- <table cellpadding="0" cellspacing="0" width="100%">
- <tbody>
-   
-  <p></p><p style="text-align: center; "><b><span style="font-size: 34px;"><font color="#ffffff">Gif Models 1 photo and 1 name AFTER EFFECTS </font></span></b></p>
- <tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af210</b></font> <img src="https://i.imgur.com/Oeo09mP.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af211</b></font> <img src="https://i.imgur.com/BtZDezd.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af212</b></font> <img src="https://i.imgur.com/Not5RpW.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af213</b></font> <img src="https://i.imgur.com/fQfhMVR.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af214</b></font> <img src="https://i.imgur.com/79s4Fzt.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF215</b></font> <img src="https://i.imgur.com/22Ivkfo.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af216</b></font> <img src="https://i.imgur.com/flgMEdq.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af217</b></font> <img src="https://i.imgur.com/TVnHTBX.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af218</b></font> <img src="https://i.imgur.com/65RZiWr.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af219</b></font> <img src="https://i.imgur.com/iSsQ0ix.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-<tr>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF220</b></font> <img src="https://i.imgur.com/1q35l34.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF221</b></font> <img src="https://i.imgur.com/u1hcJWi.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF222</b></font> <img src="https://i.imgur.com/5sHTFzV.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af223</b></font> <img src="https://i.imgur.com/rXT8PXp.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af224</b></font> <img src="https://i.imgur.com/23bXU7P.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af225</b></font> <img src="https://i.imgur.com/HbYblts.gif" style="font-size: 1rem;"> </div></td>
-
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af226</b></font> <img src="https://i.imgur.com/YVfhzRb.gif" style="font-size: 1rem;"> </div></td>
-
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af227</b></font> <img src="https://i.imgur.com/lN5qY28.gif" style="font-size: 1rem;"> </div></td>
- <td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af228</b></font> <img src="https://i.imgur.com/zi5wF95.gif" style="font-size: 1rem;"> </div></td>
- </tr>
-<tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af229</b></font> <img src="https://i.imgur.com/NGFJDFb.gif"
- style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af230</b></font> <img src="https://i.imgur.com/SPz7zhx.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af231</b></font> <img src="https://i.imgur.com/UyANwzH.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af232</b></font> <img src="https://i.imgur.com/zROBkdP.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af233</b></font> <img src="https://i.imgur.com/Zl6oo1D.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af234</b></font> <img src="https://i.imgur.com/lu3X81a.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af235</b></font> <img src="https://i.imgur.com/PZr4tY9.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af236</b></font> <img src="https://i.imgur.com/SK29Pir.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af237</b></font> <img src="https://i.imgur.com/Kyye39g.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af238</b></font> <img src="https://i.imgur.com/635ulEd.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-<tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af239</b></font> <img src="https://i.imgur.com/SMhLFzJ.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af240</b></font> <img src="https://i.imgur.com/4MG3HdW.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af241</b></font> <img src="https://i.imgur.com/pgnHh9m.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af242</b></font> <img src="https://i.imgur.com/ICZem6a.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af243</b></font> <img src="https://i.imgur.com/SD7tLPT.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af244</b></font> <img src="https://i.imgur.com/RiEiHs5.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af245</b></font> <img src="https://i.imgur.com/3aXJUmt.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af246</b></font> <img src="https://i.imgur.com/41ykO1t.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af247</b></font> <img src="https://i.imgur.com/mpYvjI9.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af248</b></font> <img src="https://i.imgur.com/28fy8FN.gif" style="font-size: 1rem;"> </div> </td>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af249</b></font> <img src="https://i.imgur.com/5ego74q.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af250</b></font> <img src="https://i.imgur.com/CFNJpZx.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af251</b></font> <img src="https://i.imgur.com/IXGIi8B.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af252</b></font> <img src="https://i.imgur.com/lDpQuQ5.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af253</b></font> <img src="https://i.imgur.com/1uASHa3.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af254</b></font> <img src="https://i.imgur.com/4TG2SoE.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af255</b></font> <img src="" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af256</b></font> <img src="https://i.imgur.com/WGI8ed0.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af257</b></font> <img src="https://i.imgur.com/ygaRO5E.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af258</b></font> <img src="https://i.imgur.com/RLD1BBI.gif" style="font-size: 1rem;"> </div> </td>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af259</b></font> <img src="https://i.imgur.com/NtHVaAU.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af260</b></font> <img src="https://i.imgur.com/JpmuXCa.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af261</b></font> <img src="https://i.imgur.com/Cv5E5Sn.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af262</b></font> <img src="https://i.imgur.com/rVdS2Mq.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af263</b></font> <img src="https://i.imgur.com/OGxCiN6.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af264</b></font> <img src="https://i.imgur.com/ngJKJUu.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af267</b></font> <img src="https://i.imgur.com/WKr33sl.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af268</b></font> <img src="https://i.imgur.com/DYkfbcM.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af269</b></font> <img src="https://i.imgur.com/x5geuyP.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af270</b></font> <img src="https://i.imgur.com/vbSin2N.gif"
- style="font-size: 1rem;"> </div> </td>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af271</b></font> <img src="https://i.imgur.com/kboDlvf.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af272</b></font> <img src="https://i.imgur.com/j2mNMvR.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af273</b></font> <img src="https://i.imgur.com/YZ5oqla.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af274</b></font> <img src="https://i.imgur.com/PAz0wfB.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af275</b></font> <img src="https://i.imgur.com/Y3fhkLQ.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af276</b></font> <img src="https://i.imgur.com/WHL54cx.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af277</b></font> <img src="https://i.imgur.com/puMOV2o.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af278</b></font> <img src="https://i.imgur.com/auZ4bg4.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af279</b></font> <img src="https://i.imgur.com/OSLpKIP.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af280</b></font> <img src="https://i.imgur.com/yPCSBvo.gif" style="font-size: 1rem;"> </div> </td>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af281</b></font> <img src="https://i.imgur.com/4Np29AK.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af282</b></font> <img src="https://i.imgur.com/dJeXgYL.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af283</b></font> <img src="https://i.imgur.com/AX4qCrz.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af284</b></font> <img src="https://i.imgur.com/a0F9nW3.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af285</b></font> <img src="https://i.imgur.com/gTqXZaG.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af286</b></font> <img src="https://i.imgur.com/OyLBbWM.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af287</b></font> <img src="https://i.imgur.com/aH3NTtc.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af288</b></font> <img src="https://i.imgur.com/GmfrR1T.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af289</b></font> <img src="https://i.imgur.com/gB0t6gh.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af290</b></font> <img src="https://i.imgur.com/ZravN8C.gif" style="font-size: 1rem;"> </div> </td>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af291</b></font> <img src="https://i.imgur.com/1yX4xdq.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af292</b></font> <img src="https://i.imgur.com/d0OegNv.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af293</b></font> <img src="https://i.imgur.com/QmFjozG.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af294</b></font> <img src="https://i.imgur.com/LnNl66w.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af295</b></font> <img src="https://i.imgur.com/ocF7Vk4.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af296</b></font> <img src="https://i.imgur.com/rmezNpr.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af297</b></font> <img src="https://i.imgur.com/cnMM1tJ.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af298</b></font> <img src="https://i.imgur.com/hcN9pdG.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af299</b></font> <img src="https://i.imgur.com/hR5hjMU.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af300</b></font> <img src="https://i.imgur.com/wta7JlM.gif" style="font-size: 1rem;"> </div> </td>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af301</b></font> <img src="https://i.imgur.com/ILfjf95.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af302</b></font> <img src="https://i.imgur.com/NcsCMxn.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af303</b></font> <img src="https://i.imgur.com/qlnLm2E.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af304</b></font> <img src="https://i.imgur.com/89xv1JB.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF305</b></font> <img src="https://i.imgur.com/wX9dPk6.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af306</b></font> <img src="https://i.imgur.com/T9Rnplb.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af307</b></font> <img src="https://i.imgur.com/2NgIFQK.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF308</b></font> <img src="https://i.imgur.com/8SuzbKz.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af309</b></font>
- <img src="https://i.imgur.com/DKhWx8r.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af310</b></font> <img src="https://i.imgur.com/FHGGxvz.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-
- </tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af311</b></font> <img src="https://i.imgur.com/re4ms3R.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af312</b></font> <img src="https://i.imgur.com/wnAoK7q.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af313</b></font> <img src="https://i.imgur.com/7Y4xYkb.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af314</b></font> <img src="https://i.imgur.com/Khg4xvj.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af315</b></font> <img src="https://i.imgur.com/oBYdFxy.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af316</b></font> <img src="https://i.imgur.com/DU3nGDr.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af317</b></font> <img src="https://i.imgur.com/EbyS28D.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af318</b></font> <img src="https://i.imgur.com/TFTHRVH.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af319</b></font> <img src="https://i.imgur.com/mSd5Bkr.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af320</b></font> <img src="https://i.imgur.com/G7Q5qHj.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af321</b></font> <img src="https://i.imgur.com/qdZPyKt.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af322</b></font> <img src="https://i.imgur.com/eKlXhmY.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af323</b></font> <img src="https://i.imgur.com/kyYyall.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af324</b></font> <img src="https://i.imgur.com/N26U3dK.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af325</b></font> <img src="https://i.imgur.com/8rxqdyw.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af326</b></font> <img src="https://i.imgur.com/SvCQqB1.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af327</b></font> <img src="https://i.imgur.com/0RaZ2Yf.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af328</b></font> <img src="https://i.imgur.com/aSDfpFE.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF329</b></font> <img src="https://i.imgur.com/aBp1tWc.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF330</b></font> <img src="https://i.imgur.com/iwKTKr2.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af331</b></font> <img src="https://i.imgur.com/o2KQ13p.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af332</b></font> <img src="https://i.imgur.com/DPyvSCD.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af333</b></font> <img src="https://i.imgur.com/yAxw4nc.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af334</b></font> <img src="https://i.imgur.com/EUWk1T0.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af335</b></font> <img src="https://i.imgur.com/kt8J8lp.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af336</b></font> <img src="https://i.imgur.com/8NmxdoZ.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af337</b></font> <img src="https://i.imgur.com/xA8DKyS.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af338</b></font> <img src="https://i.imgur.com/z8N9MUT.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af339</b></font> <img src="https://i.imgur.com/EDbdPw0.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af340</b></font> <img src="https://i.imgur.com/FDbl2Lx.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af341</b></font> <img src="https://i.imgur.com/2pOOYrZ.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af342</b></font> <img src="https://i.imgur.com/EUIirSy.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af343</b></font> <img src="https://i.imgur.com/hxX6fOx.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af344</b></font> <img src="https://i.imgur.com/SiL8aFR.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af345</b></font> <img src="https://i.imgur.com/TeVt8Wx.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af346</b></font> <img src="https://i.imgur.com/CjpvWj8.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af347</b></font> <img src="https://i.imgur.com/WY04Qiv.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px
- solid rgb(255, 255, 255);"><font color="#E43512"><b>Af348</b></font> <img src="https://i.imgur.com/xeFaY4r.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af349</b></font> <img src="https://i.imgur.com/l8yflch.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF350</b></font> <img src="https://i.imgur.com/U5WX5cO.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af351</b></font> <img src="https://i.imgur.com/rv7AanB.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af352</b></font> <img src="https://i.imgur.com/RXiibcj.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af353</b></font> <img src="https://i.imgur.com/KH4U0np.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af354</b></font> <img src="https://i.imgur.com/oaGv2pC.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af355</b></font> <img src="https://i.imgur.com/gIxFEaH.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af356</b></font> <img src="https://i.imgur.com/k4w1daa.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af357</b></font> <img src="https://i.imgur.com/LKgOB7J.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF358</b></font> <img src="https://i.imgur.com/Q5vstvS.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af359</b></font> <img src="https://i.imgur.com/FCwb84M.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af360</b></font> <img src="https://i.imgur.com/TuU5VBJ.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af361</b></font> <img src="https://i.imgur.com/LwIggxp.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af362</b></font> <img src="https://i.imgur.com/lLTSXTb.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af363</b></font> <img src="https://i.imgur.com/O9GPoJ4.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af364</b></font> <img src="https://i.imgur.com/XSYLmzw.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af365</b></font> <img src="https://i.imgur.com/o2uvsOZ.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; backgAf366</b></font> <img src="https://i.imgur.com/JCKBUKQ.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af367</b></font> <img src="https://i.imgur.com/DQwjuhj.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af370</b></font> <img src="https://i.imgur.com/QXFCwga.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af371</b></font> <img src="https://i.imgur.com/vM5hBNb.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af372</b></font> <img src="https://i.imgur.com/7F42sR5.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af373</b></font> <img src="https://i.imgur.com/ajuP7Eh.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af376</b></font> <img src="https://i.imgur.com/5GM7IOY.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af377</b></font> <img src="https://i.imgur.com/9aS8O67.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af378</b></font> <img src="https://i.imgur.com/fyGgTyb.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af380</b></font> <img src="https://i.imgur.com/vkKE6yg.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af381</b></font> <img src="https://i.imgur.com/RtHlGp0.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af382</b></font> <img src="https://i.imgur.com/O9B6Vka.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af383</b></font> <img src="https://i.imgur.com/qrj0VFR.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af385</b></font> <img src="https://i.imgur.com/K8iIakf.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af386</b></font> <img src="https://i.imgur.com/6WIIhMr.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af387</b></font> <img src="https://i.imgur.com/5v1WKiP.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af388</b></font> <img src="https://i.imgur.com/PmReWBl.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af389</b></font> <img src="https://i.imgur.com/3sshuW1.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af390</b></font> <img src="https://i.imgur.com/1W3JJlY.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af391</b></font> <img src="https://i.imgur.com/BSdVv7D.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af392</b></font> <img src="https://i.imgur.com/DBmVjkm.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255,
- 255, 255);"><font color="#E43512"><b>Af393</b></font> <img src="https://i.imgur.com/3ukZVsM.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af394</b></font> <img src="https://i.imgur.com/0vNwywB.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af395</b></font> <img src="https://i.imgur.com/OweWOFc.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af396</b></font> <img src="https://i.imgur.com/duC8jYi.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af397</b></font> <img src="https://i.imgur.com/oE8j8Ci.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af398</b></font> <img src="https://i.imgur.com/AtrM3gu.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af399</b></font> <img src="https://i.imgur.com/uegxKKi.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af400</b></font> <img src="https://i.imgur.com/8xmjdLj.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af401</b></font> <img src="https://i.imgur.com/16ejtSt.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af402</b></font> <img src="https://i.imgur.com/rA5r3w7.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af403</b></font> <img src="https://i.imgur.com/IEOdYP3.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af404</b></font> <img src="https://i.imgur.com/UvnCr8l.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af405</b></font> <img src="https://i.imgur.com/u4we83H.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af406</b></font> <img src="https://i.imgur.com/J8waHbu.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af407</b></font> <img src="https://i.imgur.com/hNV5WiS.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af408</b></font> <img src="https://i.imgur.com/zwBrjBL.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af409</b></font> <img src="https://i.imgur.com/KSJFaxU.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af410</b></font> <img src="https://i.imgur.com/m1dIPmZ.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af411</b></font> <img src="https://i.imgur.com/06zs15v.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af412</b></font> <img src="https://i.imgur.com/sa9aVOB.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af413</b></font> <img src="https://i.imgur.com/3nktgVL.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af414</b></font> <img src="https://i.imgur.com/S80yhmn.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af415</b></font> <img src="https://i.imgur.com/jcdUepl.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af416</b></font> <img src="https://i.imgur.com/ctaaY30.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af417</b></font> <img src="https://i.imgur.com/inRolpR.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af418</b></font> <img src="https://i.imgur.com/bCP7EjC.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af419</b></font> <img src="https://i.imgur.com/vSaO7Tw.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af420</b></font> <img src="https://i.imgur.com/yqZKpf9.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af421</b></font> <img src="https://i.imgur.com/iQ2x8rX.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af422</b></font> <img src="https://i.imgur.com/SMAEgLm.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af423</b></font> <img src="https://i.imgur.com/ePBNMxD.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af424</b></font> <img src="https://i.imgur.com/0LDvEj0.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af425</b></font> <img src="https://i.imgur.com/Kemhx5K.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af426</b></font> <img src="https://i.imgur.com/rpF9kMo.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af427</b></font> <img src="https://i.imgur.com/Lymxf0M.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af428</b></font> <img src="https://i.imgur.com/Mi3Zog6.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af429</b></font> <img src="https://i.imgur.com/0gT8lbk.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af430</b></font> <img src="https://i.imgur.com/8ne5g8J.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af431</b></font> <img src="https://i.imgur.com/wGAOJOh.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px;
- height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af432</b></font> <img src="https://i.imgur.com/l7o6TLa.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af433</b></font> <img src="https://i.imgur.com/ksImTLb.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af434</b></font> <img src="https://i.imgur.com/ZfzrOFo.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af435</b></font> <img src="https://i.imgur.com/nVFrnxP.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af436</b></font> <img src="https://i.imgur.com/E7MT6hr.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af437</b></font> <img src="https://i.imgur.com/CPwfO2g.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af438</b></font> <img src="https://i.imgur.com/5me8vBH.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af439</b></font> <img src="https://i.imgur.com/CX9CtX3.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af440</b></font> <img src="https://i.imgur.com/CM3Oiwh.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af441</b></font> <img src="https://i.imgur.com/K4tBREM.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af442</b></font> <img src="https://i.imgur.com/cYBTweZ.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af443</b></font> <img src="https://i.imgur.com/tCmLz6f.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af444</b></font> <img src="https://i.imgur.com/q9LjJ8f.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af445</b></font> <img src="https://i.imgur.com/VX7aUz0.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af446</b></font> <img src="https://i.imgur.com/fyziGto.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af447</b></font> <img src="https://i.imgur.com/vbOUGdk.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af448</b></font> <img src="https://i.imgur.com/hGZcIPR.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af449</b></font> <img src="https://i.imgur.com/zlz7Yqw.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af450</b></font> <img src="https://i.imgur.com/pLbwtgw.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af451</b></font> <img src="https://i.imgur.com/9RVpGyF.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af452</b></font> <img src="https://i.imgur.com/VRAOJmO.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af453</b></font> <img src="https://i.imgur.com/LGBsvgM.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af454</b></font> <img src="https://i.imgur.com/Qdg8dev.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af455</b></font> <img src="https://i.imgur.com/Z4YClXh.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af456</b></font> <img src="https://i.imgur.com/aTQTRCM.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af457</b></font> <img src="https://i.imgur.com/2NYIh6X.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af458</b></font> <img src="https://i.imgur.com/CFJERHA.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af459</b></font> <img src="https://i.imgur.com/CPXASKP.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af460</b></font> <img src="https://i.imgur.com/8yhfqwb.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af461</b></font> <img src="https://i.imgur.com/KFanPt2.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af462</b></font> <img src="https://i.imgur.com/QZIfCxf.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af463</b></font> <img src="https://i.imgur.com/v3knNH9.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af464</b></font> <img src="https://i.imgur.com/oqFXaKu.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af465</b></font> <img src="https://i.imgur.com/uOl6Y1l.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af466</b></font> <img src="https://i.imgur.com/hL0r3ss.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>Af467</b></font> <img src="https://i.imgur.com/pGHZZfD.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF468</b></font> <img src="https://i.imgur.com/149RQmA.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF469</b></font> <img src="https://i.imgur.com/2b5INBi.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF470</b></font> <img src="https://i.imgur.com/AsUDRuc.gif" style="font-size: 1rem;">
- </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF471</b></font> <img src="https://i.imgur.com/Uyt4Y7Z.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF472</b></font> <img src="https://i.imgur.com/igLTISb.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF473</b></font> <img src="https://i.imgur.com/KHUdkIH.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF474</b></font> <img src="https://i.imgur.com/phTGocL.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF475</b></font> <img src="https://i.imgur.com/X4spXG4.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF476</b></font> <img src="https://i.imgur.com/ubSxcLs.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF477</b></font> <img src="https://i.imgur.com/PJRbKSs.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF478</b></font> <img src="https://i.imgur.com/utbepAo.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF479</b></font> <img src="https://i.imgur.com/jBKdQRn.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF481</b></font> <img src="https://i.imgur.com/6ZwvivX.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF482</b></font> <img src="https://i.imgur.com/ECocGl0.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF483</b></font> <img src="https://i.imgur.com/XMgvgeK.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF484</b></font> <img src="https://i.imgur.com/pOLKQRp.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF485</b></font> <img src="https://i.imgur.com/EG4EkSc.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF486</b></font> <img src="https://i.imgur.com/5OLTXWT.gif" style="font-size: 1rem;"> </div></td>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF487</b></font> <img src="https://i.imgur.com/Lq2Uw2c.gif" style="font-size: 1rem;"> </div> </td>
-</tr>
-</tr><tr>
-<td><div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF488</b></font> <img src="https://i.imgur.com/dBB19OS.gif" style="font-size: 1rem;"> </div> </td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF489</b></font> <img src="https://i.imgur.com/Vu5awaQ.gif" style="font-size: 1rem;"> </div></td>
-<td> <div style="text-align: center; width: 100px; height: 120px; background-color:#12C7E4; border: 3px solid rgb(255, 255, 255);"><font color="#E43512"><b>AF490</b></font> <img src="https://i.imgur.com/EZwcjL7.gif" style="font-size: 1rem;"> </div></td>
-
-</tr>
-
-</tbody></table>
-   
-<link type="text/css" rel="stylesheet" href="magicscroll/magicscroll.css"/>
-<script type="text/javascript" src="magicscroll/magicscroll.js"></script>
-   
-
-  </body>
-  </html>
-
+<div class="wizard-settings col">
+    <div class="settings-controls">
+        <button class="cfg-btn btn-preview" form="app-params-form" autocomplete="off" onclick="applySettings();">Apply settings</button>
+    </div>
+    <div class="inner">
+        <form id="app-params-form" autocomplete="off" onsubmit="return false;">
+        <table id="params">
+            <tr><td>Mode:</td><td>
+                <select name="mode">
+                    <option selected value="scroll">scroll</option>
+                    <option value="carousel">carousel</option>
+                    <option value="cover-flow">cover-flow</option>
+                    <option value="animation">animation</option>
+                </select>
+            </td></tr>
+            <tr><td>Orientation:</td><td>
+                <select name="orientation">
+                    <option selected value="horizontal">horizontal</option>
+                    <option value="vertical">vertical</option>
+                </select>
+            </td></tr>
+            <tr><td>Scroll width:</td><td><input type="text" name="width" value="auto"/>
+            <span class="values">auto | &lt;pixels&gt; | &lt;percentage&gt; </span></td></tr>
+            <tr><td>Scroll height:</td><td><input type="text" name="height" value="auto"/>
+            <span class="values">auto | &lt;pixels&gt; | &lt;percentage&gt;</span></td></tr>
+            <tr><td>Items:</td><td><input type="text" name="items" value="auto"/>
+                    <span class="values">auto | fit | number | array</span>
+                    <span class="values">
+                    <p>You can preset the number of visible items depending on the width of scroll view.</p>
+                    <p>Format: <em>[ [x,y], [x,y], ... ]</em><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<strong>x</strong> - maximum scroll width<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<strong>y</strong> - items to display.</p>
+                    <p>Example: <em>[ [600,2], [800,3], [1000,5], [1200,7], [1500,10] ]</em></p>
+                    </span>
+                </td>
+            </tr>
+            <tr><td>Speed:</td><td><input type="text" name="speed" value="600"/><span class="values">milliseconds</span></td></tr>
+            <tr><td>Step:</td><td><input type="text" name="step" value="auto"/>
+                    <span class="values">auto | numeric</span>
+                    <span class="values"><p>Use 0 for continuous scroll.</p></span>
+                </td></tr>
+            <tr><td>Autoplay:</td><td><input type="text" name="autoplay" value="0"/><span class="values">milliseconds</span></td></tr>
+            <tr><td>Loop:</td><td>
+                <select name="loop">
+                    <option selected value="infinite">infinite</option>
+                    <option value="rewind">rewind</option>
+                    <option value="off">off</option>
+                </select>
+            </td></tr>
+            <tr><td>Arrows:</td><td>
+                <select name="arrows">
+                    <option selected value="outside">outside</option>
+                    <option value="inside">inside</option>
+                    <option value="off">off</option>
+                </select>
+            </td></tr>
+            <tr><td>Pagination:</td><td>
+                <select name="pagination">
+                    <option selected value="false">false</option>
+                    <option value="true">true</option>
+                </select>
+            </td></tr>
+            <tr><td>Scroll on wheel:</td><td>
+                <select name="scrollOnWheel">
+                    <option value="auto" selected>auto</option>
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                </select>
+            </td></tr>
+            <tr><td>Draggable:</td><td>
+                <select name="draggable">
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                </select>
+            </td></tr>
+            <tr><td>Keyboard:</td><td>
+                <select name="keyboard">
+                    <option selected value="false">false</option>
+                    <option value="true">true</option>
+                </select>
+            </td></tr>
+            <tr><td>Easing:</td><td><input type="text" name="easing" value="cubic-bezier(.8, 0, .5, 1)"/>
+                <span class="values"><p>The <a href="https://developer.mozilla.org/en/docs/Web/CSS/timing-function" target="_blank">&lt;easing function&gt;</a> that describes an acceleration curve, so the speed of the transition can vary over its duration.</p></span>
+                <span class="values"><p>You can model your own acceleration curve (Bezier curve) here:</p> <a href="http://cubic-bezier.com">http://cubic-bezier.com</a></span>
+            </td></tr>
+            <tr><td>Lazy load:</td><td>
+                <select name="lazyLoad">
+                    <option selected value="false">false</option>
+                    <option value="true">true</option>
+                </select>
+            </td></tr>
+            <tr><td>Autostart:</td><td>
+                <select name="autostart">
+                    <option selected value="true">true</option>
+                    <option value="false">false</option>
+                </select>
+            </td></tr>
+        </table>
+        </form>
+    </div>
+    <div class="footer">&copy; <a href="https://www.magictoolbox.com">Magic Toolbox</a></div>
+</div>
+<div id="code-to-copy"></div>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.min.js"></script>
+<script>try { prettyPrint(); } catch(e) {}</script>
+</body></html>
